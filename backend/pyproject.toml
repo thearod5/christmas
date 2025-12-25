@@ -1,0 +1,51 @@
+[project]
+name = "letterapp-backend"
+version = "0.1.0"
+description = "Letter Delivery Application Backend"
+requires-python = ">=3.11"
+dependencies = [
+    "Django==4.2.7",
+    "psycopg2-binary==2.9.9",
+    "gunicorn==21.2.0",
+    "python-decouple==3.8",
+    "dj-database-url==2.1.0",
+    "djangorestframework==3.14.0",
+    "django-cors-headers==4.3.1",
+    "pydantic==2.5.0",
+    "pydantic-settings==2.1.0",
+    "Pillow==10.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy==1.7.1",
+    "django-stubs==4.2.7",
+    "djangorestframework-stubs==3.14.5",
+    "types-requests==2.31.0.10",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "mypy>=1.7.1",
+    "django-stubs>=4.2.7",
+    "djangorestframework-stubs>=3.14.5",
+    "types-requests>=2.31.0.10",
+]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+[[tool.mypy.overrides]]
+module = [
+    "decouple.*",
+    "corsheaders.*",
+]
+ignore_missing_imports = true
