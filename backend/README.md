@@ -64,7 +64,7 @@ uv pip install --upgrade package-name
 python manage.py migrate
 
 # Create superuser
-python create_superuser.py
+python manage.py ensure_superuser
 
 # Run development server
 python manage.py runserver
@@ -109,8 +109,7 @@ backend/
 │   └── admin.py        # Admin configuration
 ├── pyproject.toml      # Project configuration and dependencies
 ├── requirements.txt    # Production dependencies
-├── manage.py           # Django management script
-└── create_superuser.py # Helper script for superuser creation
+└── manage.py           # Django management script
 ```
 
 ## API Endpoints

@@ -1,35 +1,27 @@
-version: '3.8'
+# Production Docker Compose Configuration Override
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# This file overrides settings from docker-compose.yml for production use
 
 services:
   postgres:
-    image: postgres:15-alpine
-    container_name: letterapp-postgres-prod
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-letterapp}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB:-letterdb}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    # Don't expose postgres port externally in production
+    ports: []
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-letterapp}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: letterapp-backend-prod
+    # Override command to use Gunicorn for production
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
-             python create_superuser.py &&
+             python manage.py ensure_superuser &&
              gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 120"
+    # Remove port exposure (nginx will proxy)
+    ports: []
+    # Don't mount source code in production
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
+    # Override environment for production
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-letterapp}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-letterdb}
       - SECRET_KEY=${DJANGO_SECRET_KEY}
@@ -40,23 +32,26 @@ services:
       - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-admin}
       - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-admin@example.com}
       - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
-    depends_on:
-      postgres:
-        condition: service_healthy
     restart: unless-stopped
 
   frontend:
+    # Use production build target
     build:
       context: ./frontend
-      dockerfile: Dockerfile.prod
-      args:
-        - VITE_API_URL=${VITE_API_URL}
-    container_name: letterapp-frontend-prod
+      dockerfile: Dockerfile
+      target: production
+    # Remove port exposure (nginx will proxy)
+    ports: []
+    # Don't mount source code in production
+    volumes: []
+    # Production API URL will be served through nginx
+    environment:
+      - VITE_API_URL=${VITE_API_URL:-/api}
     restart: unless-stopped
 
   nginx:
     image: nginx:alpine
-    container_name: letterapp-nginx-prod
+    container_name: letterapp-nginx
     ports:
       - "80:80"
       - "443:443"
@@ -65,13 +60,8 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - static_volume:/static:ro
       - media_volume:/media:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro  # For SSL certificates
+      - ./nginx/ssl:/etc/nginx/ssl:ro  # For SSL certificates (optional)
     depends_on:
       - backend
       - frontend
     restart: unless-stopped
-
-volumes:
-  postgres_data:
-  static_volume:
-  media_volume:

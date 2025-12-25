@@ -28,12 +28,14 @@ A self-contained web application for creating and sharing beautifully presented 
 - Node.js 18+ (for local development)
 - Python 3.11+ (for local development)
 
-### Quick Start
+### Development Setup (Recommended)
 
-1. **Clone the repository and copy environment files**
+The development setup runs services with hot-reload and direct port access (no nginx proxy).
+
+1. **Clone the repository and use the provided .env file**
    ```bash
-   cp .env.example .env
-   cp backend/.env.example backend/.env
+   # The .env file is already configured for development
+   # No need to copy from .env.example
    ```
 
 2. **Start the application**
@@ -41,23 +43,40 @@ A self-contained web application for creating and sharing beautifully presented 
    docker-compose up --build
    ```
 
-3. **Run migrations and create superuser** (in a new terminal)
-   ```bash
-   # Run migrations
-   docker-compose exec backend python manage.py migrate
-
-   # Create superuser
-   docker-compose exec backend python create_superuser.py
-   ```
-
-4. **Access the application**
-   - Frontend: http://localhost
-   - Django Admin: http://localhost/admin
-   - API: http://localhost/api
+3. **Access the application**
+   - Frontend: http://localhost:5173 (Vite dev server with hot reload)
+   - Backend API: http://localhost:8000/api
+   - Django Admin: http://localhost:8000/admin
+   - PostgreSQL: localhost:5432
 
    Default admin credentials:
    - Username: `admin`
    - Password: `admin123`
+
+   Note: Migrations and superuser creation happen automatically on startup.
+
+### Production Setup
+
+The production setup uses nginx as a reverse proxy and serves optimized builds.
+
+1. **Copy and configure production environment**
+   ```bash
+   cp .env.prod.example .env
+   # Edit .env and update all CHANGE_ME values
+   ```
+
+2. **Start the application with production overrides**
+   ```bash
+   docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+   ```
+
+3. **Access the application**
+   - All traffic: http://yourdomain.com (via nginx)
+   - Frontend: Served via nginx at /
+   - Backend API: Proxied via nginx at /api
+   - Django Admin: Proxied via nginx at /admin
+
+   Note: In production, services are not directly accessible; nginx handles all routing.
 
 ### Development
 
@@ -88,7 +107,7 @@ uv sync
 python manage.py migrate
 
 # Create superuser
-python create_superuser.py
+python manage.py ensure_superuser
 
 # Run development server
 python manage.py runserver
@@ -151,7 +170,10 @@ npm run type-check
 ├── nginx/                  # Nginx configuration
 │   ├── nginx.conf
 │   └── conf.d/
-├── docker-compose.yml
+├── docker-compose.yml      # Development configuration
+├── docker-compose.prod.yml # Production overrides
+├── .env                    # Development environment variables
+├── .env.prod.example       # Production environment template
 └── REQUIREMENTS.md         # Technical specification
 ```
 
@@ -223,35 +245,63 @@ Share this URL with the recipient to view the letter.
 
 ### Production Configuration
 
-1. Update environment variables in `.env`:
-   ```env
-   DEBUG=False
-   ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
-   FRONTEND_URL=https://yourdomain.com
-   SECRET_KEY=your-production-secret-key
-   POSTGRES_PASSWORD=secure-password
+1. **Copy and configure production environment:**
+   ```bash
+   cp .env.prod.example .env
    ```
 
-2. Build and start containers:
+   Then edit `.env` and update all values marked with `CHANGE_ME`:
+   - Generate a secure `DJANGO_SECRET_KEY`
+   - Set strong passwords for `POSTGRES_PASSWORD` and `DJANGO_SUPERUSER_PASSWORD`
+   - Update `ALLOWED_HOSTS` with your domain(s)
+   - Update `FRONTEND_URL` and `CORS_ALLOWED_ORIGINS` with your production URL(s)
+
+2. **Build and start production containers:**
    ```bash
-   docker-compose up -d --build
+   docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
    ```
 
-3. Run migrations:
+   Note: Migrations and superuser creation happen automatically on startup.
+
+3. **Verify deployment:**
    ```bash
-   docker-compose exec backend python manage.py migrate
-   docker-compose exec backend python create_superuser.py
+   docker-compose logs -f
    ```
+
+### Environment Differences
+
+| Aspect | Development | Production |
+|--------|-------------|------------|
+| Compose Command | `docker-compose up` | `docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d` |
+| Frontend Port | 5173 (direct) | 80/443 (via nginx) |
+| Backend Port | 8000 (direct) | Internal only (via nginx) |
+| Frontend Server | Vite dev (hot reload) | Static build served by serve |
+| Backend Server | Django runserver | Gunicorn |
+| Nginx | Not used | Reverse proxy |
+| Source Mounting | Yes | No |
+| Debug Mode | True | False |
 
 ### AWS EC2 Deployment
 
 1. Launch an EC2 instance (Ubuntu 22.04 recommended)
-2. Install Docker and Docker Compose
+2. Install Docker and Docker Compose:
+   ```bash
+   sudo apt update
+   sudo apt install -y docker.io docker-compose
+   sudo systemctl enable docker
+   sudo usermod -aG docker ubuntu
+   ```
 3. Clone the repository
-4. Configure environment variables
+4. Follow "Production Configuration" steps above
 5. Open ports 80 and 443 in security groups
-6. Run `docker-compose up -d --build`
-7. (Optional) Configure SSL with Let's Encrypt
+6. (Optional) Configure SSL with Let's Encrypt:
+   ```bash
+   # Install certbot
+   sudo apt install -y certbot
+   # Generate certificates
+   sudo certbot certonly --standalone -d yourdomain.com
+   # Update nginx config to use SSL
+   ```
 
 ## Contributing
 

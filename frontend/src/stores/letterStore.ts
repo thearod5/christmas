@@ -3,7 +3,7 @@
  */
 import { create } from 'zustand';
 import { apiClient } from '../api/client';
-import type { Letter, LetterPublic, CreateLetterRequest, UpdateLetterRequest } from '../types';
+import type { Letter, LetterPublic, CreateLetterRequest, UpdateLetterRequest } from '../types/index';
 
 interface LetterState {
   currentLetter: Letter | LetterPublic | null;

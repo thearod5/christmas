@@ -27,7 +27,7 @@ docker-compose exec -T backend python manage.py migrate
 
 # Create superuser
 echo "👤 Creating superuser..."
-docker-compose exec -T backend python create_superuser.py
+docker-compose exec -T backend python manage.py ensure_superuser
 
 echo ""
 echo "✅ Setup complete!"

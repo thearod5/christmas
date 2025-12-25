@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { MantineProvider } from '@mantine/core';
+import '@mantine/core/styles.css';
+import { theme } from './theme';
 import { useAuthStore } from './stores/authStore';
 import PublicLetterPage from './pages/public/PublicLetterPage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -30,58 +33,60 @@ function App() {
   }, [checkAuth]);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/letter/:slug" element={<PublicLetterPage />} />
+    <MantineProvider theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/letter/:slug" element={<PublicLetterPage />} />
 
-        {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLoginPage />} />
-        <Route
-          path="/admin/dashboard"
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/letters"
-          element={
-            <ProtectedRoute>
-              <LetterListPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/letters/new"
-          element={
-            <ProtectedRoute>
-              <LetterFormPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/letters/:id/edit"
-          element={
-            <ProtectedRoute>
-              <LetterFormPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/letter-types"
-          element={
-            <ProtectedRoute>
-              <LetterTypeListPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/letters"
+            element={
+              <ProtectedRoute>
+                <LetterListPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/letters/new"
+            element={
+              <ProtectedRoute>
+                <LetterFormPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/letters/:id/edit"
+            element={
+              <ProtectedRoute>
+                <LetterFormPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/letter-types"
+            element={
+              <ProtectedRoute>
+                <LetterTypeListPage />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Default Route */}
-        <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Default Route */}
+          <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </MantineProvider>
   );
 }
 

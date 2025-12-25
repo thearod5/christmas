@@ -14,7 +14,7 @@ import type {
   UpdateLetterRequest,
   CreateLetterTypeRequest,
   APIError,
-} from '../types';
+} from '../types/index';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost/api';
 

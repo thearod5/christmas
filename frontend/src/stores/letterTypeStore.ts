@@ -3,7 +3,7 @@
  */
 import { create } from 'zustand';
 import { apiClient } from '../api/client';
-import type { LetterType, CreateLetterTypeRequest } from '../types';
+import type { LetterType, CreateLetterTypeRequest } from '../types/index';
 
 interface LetterTypeState {
   letterTypes: LetterType[];

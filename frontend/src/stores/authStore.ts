@@ -3,7 +3,7 @@
  */
 import { create } from 'zustand';
 import { apiClient } from '../api/client';
-import type { User, LoginRequest } from '../types';
+import type { User, LoginRequest } from '../types/index';
 
 interface AuthState {
   user: User | null;
