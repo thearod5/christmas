@@ -21,28 +21,19 @@ export const useLetterInteractionStore = create<LetterInteractionState>((set, ge
   closeEnvelope: () => set({ isEnvelopeOpen: false }),
 
   unlockBlock: (blockId: string) => set((state) => {
-    if (!blockId) {
-      console.warn('Attempted to unlock block with invalid ID:', blockId);
-      return state; // Ignore invalid blockIds
-    }
-    console.log('Store: Unlocking block:', blockId);
+    if (!blockId) return state; // Ignore invalid blockIds
     const newUnlockedBlocks = new Set(state.unlockedBlocks);
     newUnlockedBlocks.add(blockId);
-    console.log('Store: Unlocked blocks after unlock:', Array.from(newUnlockedBlocks));
     return { unlockedBlocks: newUnlockedBlocks };
   }),
 
   isBlockUnlocked: (blockId: string) => {
     if (!blockId) return false; // Invalid blockIds are never unlocked
-    const unlocked = get().unlockedBlocks.has(blockId);
-    return unlocked;
+    return get().unlockedBlocks.has(blockId);
   },
 
-  reset: () => {
-    console.log('Store: Resetting interaction state');
-    return set({
-      isEnvelopeOpen: false,
-      unlockedBlocks: new Set<string>(),
-    });
-  },
+  reset: () => set({
+    isEnvelopeOpen: false,
+    unlockedBlocks: new Set<string>(),
+  }),
 }));
