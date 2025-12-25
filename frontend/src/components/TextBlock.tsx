@@ -1,15 +1,16 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Box, Text } from '@mantine/core';
-import { useLetterInteractionStore } from '../stores/letterInteractionStore';
+import {useState} from 'react';
+import {motion} from 'framer-motion';
+import {Box, Text} from '@mantine/core';
+import {IconLock} from '@tabler/icons-react';
+import {useLetterInteractionStore} from '../stores/letterInteractionStore';
 
 interface TextBlockProps {
   content: string;
   blockId: string;
 }
 
-export default function TextBlock({ content, blockId }: TextBlockProps) {
-  const { unlockBlock, isBlockUnlocked } = useLetterInteractionStore();
+export default function TextBlock({content, blockId}: TextBlockProps) {
+  const {unlockBlock, isBlockUnlocked} = useLetterInteractionStore();
   const isUnlocked = isBlockUnlocked(blockId);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -41,8 +42,8 @@ export default function TextBlock({ content, blockId }: TextBlockProps) {
       {/* Locked Overlay */}
       {!isUnlocked && (
         <motion.div
-          initial={{ opacity: 1 }}
-          animate={{ opacity: isHovered ? 0.8 : 1 }}
+          initial={{opacity: 1}}
+          animate={{opacity: isHovered ? 0.8 : 1}}
           style={{
             position: 'absolute',
             top: 0,
@@ -62,20 +63,24 @@ export default function TextBlock({ content, blockId }: TextBlockProps) {
               color: '#6e5b45',
               fontStyle: 'italic',
               fontWeight: 500,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
             }}
           >
-            🔒 Click to reveal
+            <IconLock size={18} stroke={2}/>
+            Click to reveal
           </Text>
         </motion.div>
       )}
 
       {/* Text Content with Left-to-Right Reveal */}
       <motion.div
-        initial={{ clipPath: 'inset(0 100% 0 0)' }}
+        initial={{clipPath: 'inset(0 100% 0 0)'}}
         animate={
           isUnlocked
-            ? { clipPath: 'inset(0 0% 0 0)' }
-            : { clipPath: 'inset(0 100% 0 0)' }
+            ? {clipPath: 'inset(0 0% 0 0)'}
+            : {clipPath: 'inset(0 100% 0 0)'}
         }
         transition={{
           duration: 1.2,

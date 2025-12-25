@@ -41,7 +41,6 @@ src/
 │   ├── TextBlock.tsx             # Individual text block with lock/reveal
 │   ├── LetterHeader.tsx          # Letter recipient and description
 │   ├── LetterContent.tsx         # Content blocks renderer
-│   ├── CloseButton.tsx           # Close letter button
 │   ├── LoadingState.tsx          # Loading spinner
 │   └── ErrorState.tsx            # Error display
 ├── pages/
