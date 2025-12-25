@@ -29,7 +29,7 @@ export default function LetterFormPage() {
       setDescription(currentLetter.description);
       setRecipientName(currentLetter.recipient_name);
       setLetterTypeId(currentLetter.letter_type.id);
-      setIsPublished(currentLetter.is_published);
+      setIsPublished('is_published' in currentLetter ? currentLetter.is_published : false);
       setContentBlocks(
         currentLetter.content_blocks.map((block, index) => ({
           block_type: 'text',
