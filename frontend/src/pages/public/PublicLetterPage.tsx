@@ -41,12 +41,11 @@ export default function PublicLetterPage() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: "2rem",
         margin: "2rem",
-
+        width: '85%',
       }}
     >
-      <Container size="lg" style={{width: '100%', maxWidth: '900px'}}>
+      <Container size="lg" style={{width: '100%', maxWidth: '500px'}}>
         <Stack gap="xl" align="center">
           <EnvelopeAnimation key={envelopeKey} title={currentLetter.title}>
             <Stack gap="lg">

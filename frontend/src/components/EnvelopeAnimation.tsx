@@ -39,8 +39,7 @@ export default function EnvelopeAnimation({children, title, onAnimationComplete}
         position: 'relative',
         width: '100%',
         maxWidth: '900px',
-        perspective: '1000px',
-
+        perspective: '1000px'
       }}
     >
       {/* Envelope Container */}
@@ -129,7 +128,7 @@ export default function EnvelopeAnimation({children, title, onAnimationComplete}
             height: 'min(150px, 22vh)',
             transformOrigin: 'top center',
             transformStyle: 'preserve-3d',
-            zIndex: 3,
+            zIndex: 3
           }}
         >
           <Paper
@@ -145,6 +144,7 @@ export default function EnvelopeAnimation({children, title, onAnimationComplete}
               alignItems: 'center',
               justifyContent: 'center',
               paddingBottom: '5rem',
+
             }}
           >
             {/* Title on Flap */}
