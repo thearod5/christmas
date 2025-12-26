@@ -40,6 +40,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       target: production
+      args:
+        VITE_API_URL: ${VITE_API_URL:-/api}
     # Remove port exposure (nginx will proxy)
     ports: !reset []
     # Don't mount source code in production - explicitly set empty volumes to override base config
