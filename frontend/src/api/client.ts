@@ -16,7 +16,7 @@ import type {
   APIError,
 } from '../types/index';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 class APIClient {
   private client: AxiosInstance;
