@@ -5,7 +5,7 @@
 services:
   postgres:
     # Don't expose postgres port externally in production
-    ports: []
+    ports: !reset []
     restart: unless-stopped
 
   backend:
@@ -16,7 +16,7 @@ services:
              python manage.py ensure_superuser &&
              gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 120"
     # Remove port exposure (nginx will proxy)
-    ports: []
+    ports: !reset []
     # Don't mount source code in production
     volumes:
       - static_volume:/app/staticfiles
@@ -41,7 +41,7 @@ services:
       dockerfile: Dockerfile
       target: production
     # Remove port exposure (nginx will proxy)
-    ports: []
+    ports: !reset []
     # Don't mount source code in production - explicitly set empty volumes to override base config
     volumes: !reset []
     # Production API URL will be served through nginx
