@@ -59,6 +59,7 @@ services:
       - "5173:5173"
     volumes:
       - ./frontend:/app
+      - /app/node_modules  # Exclude node_modules from volume mount
     environment:
       - VITE_API_URL=${VITE_API_URL:-http://localhost:8000/api}
     stdin_open: true

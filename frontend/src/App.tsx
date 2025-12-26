@@ -4,6 +4,7 @@ import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import { theme } from './theme';
 import { useAuthStore } from './stores/authStore';
+import LandingPage from './pages/public/LandingPage';
 import PublicLetterPage from './pages/public/PublicLetterPage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -83,7 +84,7 @@ function App() {
           />
 
           {/* Default Route */}
-          <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="/" element={<LandingPage />} />
         </Routes>
       </BrowserRouter>
     </MantineProvider>

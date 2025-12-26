@@ -2,6 +2,7 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.request import Request
+from django.db import connection
 from .models import Letter, LetterType, ContentBlock
 from .serializers import (
     LetterSerializer,
@@ -84,4 +85,30 @@ def letter_public_view(request: Request, slug: str) -> Response:
             status=status.HTTP_404_NOT_FOUND
         )
 
+
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])
+def health_check(request: Request) -> Response:
+    """Health check endpoint for monitoring service status."""
+    try:
+        # Check database connectivity
+        connection.ensure_connection()
+        db_status = "healthy"
+    except Exception as e:
+        db_status = f"unhealthy: {str(e)}"
+        return Response(
+            {
+                'status': 'unhealthy',
+                'database': db_status
+            },
+            status=status.HTTP_503_SERVICE_UNAVAILABLE
+        )
+
+    return Response(
+        {
+            'status': 'healthy',
+            'database': db_status
+        },
+        status=status.HTTP_200_OK
+    )
 
