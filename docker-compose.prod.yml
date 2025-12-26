@@ -42,8 +42,8 @@ services:
       target: production
     # Remove port exposure (nginx will proxy)
     ports: []
-    # Don't mount source code in production
-    volumes: []
+    # Don't mount source code in production - explicitly set empty volumes to override base config
+    volumes: !reset []
     # Production API URL will be served through nginx
     environment:
       - VITE_API_URL=${VITE_API_URL:-/api}
